@@ -21,9 +21,9 @@ images = glob.glob('camera_cal/calibration*.jpg')
 for fname in images:
     cal_img = cv2.imread(fname)
     cal_gray = cv2.cvtColor(cal_img,cv2.COLOR_BGR2GRAY)
-    plt.imshow(cal_img)
+    
     # Find the chessboard corners
-    ret, corners = cv2.findChessboardCorners(cal_gray, (9,6),None)
+    ret, corners = cv2.findChessboardCorners(cal_gray, (9,6), None)
 
     # If found, add object points, image points
     if ret == True:
@@ -32,7 +32,7 @@ for fname in images:
     
         # Draw and display the corners
         cal_img = cv2.drawChessboardCorners(cal_img, (9,6), corners, ret)
-        cv2.imshow('img',cal_img)
+       
         #cv2.waitKey(500)
 
 cv2.destroyAllWindows()
@@ -40,20 +40,29 @@ cv2.destroyAllWindows()
 ###
 
 ###correct the distortion
-def cal_undistort(img, objpoints, imgpoints):
-    # Use cv2.calibrateCamera() and cv2.undistort()
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[1::-1], None, None)
-    undist = cv2.undistort(img, mtx, dist, None, mtx)
-    return undist
 
-img = cv2.imread('test_images/test1.jpg')
+img = cv2.imread('camera_cal/calibration1.jpg')
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[1::-1], None, None)
+undistorted = cv2.undistort(img, mtx, dist, None, mtx)
+f = plt.figure(figsize=(20,10))
+plt.subplot(1, 2, 1)
+plt.imshow(img)
+plt.title("original")
 
-undistorted = cal_undistort(img, objpoints, imgpoints)
-cv2.imshow('img',undistorted)
+plt.subplot(1, 2, 2)
+plt.imshow(undistorted)
+plt.title("undistorted")
+f.savefig('output_images/CameraCalResult.png')
+plt.show()
 
 # Save the fitted camera parameters
-ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[1::-1], None, None)
-pickle.dump(dict(mtx=mtx,dist=dist),open('calibrarion.p','wb'))
+print(mtx)
+dist_pickle = {}
+dist_pickle["mtx"] = mtx
+dist_pickle["dist"] = dist
+pickle.dump( dist_pickle, open( "calibrarion.p", "wb" ) )
+
+
 
 
 ###The code block below plots results of camera calibration, uncomment it for plotting original and undistorted chessboard
@@ -67,6 +76,6 @@ pickle.dump(dict(mtx=mtx,dist=dist),open('calibrarion.p','wb'))
 #ax2.set_title('Undistorted Image', fontsize=50)
 #plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
 #plt.show()
-#f.savefig('CameraCalResult.pdf')
+#f.savefig('output_images/CameraCalResult.png')
 #plt.close()
 
