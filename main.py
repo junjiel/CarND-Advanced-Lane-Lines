@@ -320,4 +320,5 @@ left_line.line_base_pos = position_from_center(ploty,left_line.current_fit,right
 visualization = draw_line(warped_binary,undist, left_line.allx,right_line.allx,ploty, Minv, left_line.radius_of_curvature,right_line.radius_of_curvature, left_line.line_base_pos)
 f = plt.figure()
 plt.imshow(visualization)
+f.savefig('output_images/visualization.png')
 plt.show()

@@ -42,17 +42,31 @@ cv2.destroyAllWindows()
 ###correct the distortion
 
 img = cv2.imread('camera_cal/calibration1.jpg')
+test_img = cv2.imread('test_images/test1.jpg')
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[1::-1], None, None)
 undistorted = cv2.undistort(img, mtx, dist, None, mtx)
+test_undistorted = cv2.undistort(test_img, mtx, dist, None, mtx)
+
+#plot and save undistorted  calibration image
 f = plt.figure(figsize=(20,10))
 plt.subplot(1, 2, 1)
 plt.imshow(img)
 plt.title("original")
-
 plt.subplot(1, 2, 2)
 plt.imshow(undistorted)
 plt.title("undistorted")
 f.savefig('output_images/CameraCalResult.png')
+
+#plot and save undistorted  test image
+f_test = plt.figure(figsize=(20,10))
+plt.subplot(1, 2, 1)
+plt.imshow(test_img)
+plt.title("original")
+
+plt.subplot(1, 2, 2)
+plt.imshow(test_undistorted)
+plt.title("undistorted")
+f_test.savefig('output_images/undistorted_test_img.png')
 plt.show()
 
 # Save the fitted camera parameters
